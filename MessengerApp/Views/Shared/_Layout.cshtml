@@ -20,7 +20,7 @@
             <a class="room-button" href="#">
                 Room #2
             </a>
-            <a class="room-button" href="#">
+            <a class="room-button" id="create-room-btn" href="#">
                 <strong>+</strong>
             </a>
         </div>
@@ -28,7 +28,22 @@
             @RenderBody();
         </div>
         
+        <div class="modal active" id="create-room-module">
+            <form asp-controller="" asp-action="" class="modal-body">
+                <button type="button" class="close" onclick="closeModule()">X</button>
+                <header>Stwórz pokój</header>
+                <div>
+                    <input type="text" />
+                </div>
+                <footer>
+                    <button>Stwórz</button>
+                </footer>
+            </form>
+        </div>
+
     </div>
 
+    <script src="~/js/site.js"></script>
+    @RenderSection("Scripts", false);
 </body>
 </html>
