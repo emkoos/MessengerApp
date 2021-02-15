@@ -25,6 +25,7 @@ body {
 .side-menu {
     background-color: #202225;
     min-width: 100px;
+    max-width: 100px;
     display: flex;
     flex-direction: column;
     z-index: 100;

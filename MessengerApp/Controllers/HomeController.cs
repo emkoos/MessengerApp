@@ -1,6 +1,7 @@
 ﻿using MessengerApp.Data;
 using MessengerApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +23,28 @@ namespace MessengerApp.Controllers
         [HttpGet("{id}")]
         public IActionResult Chat(int id)
         {
-            var chat = _context.Chats.FirstOrDefault(x => x.Id == id);
+            var chat = _context.Chats
+                .Include(m => m.Messages)
+                .FirstOrDefault(x => x.Id == id);
+           
             return View(chat);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateMessage(int chatId, string content)
+        {
+            var message = new Message
+            {
+                ChatId = chatId,
+                Content = content,
+                Nick = "Default",
+                Timestamp = DateTime.Now
+            };
+
+            _context.Messages.Add(message);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Chat", new { id = chatId });
         }
 
         [HttpPost]
