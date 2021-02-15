@@ -1,4 +1,5 @@
 using MessengerApp.Data;
+using MessengerApp.Hubs;
 using MessengerApp.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +41,8 @@ namespace MessengerApp
             })
                 .AddEntityFrameworkStores<MessengerDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -55,6 +58,11 @@ namespace MessengerApp
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSignalR(routes => 
+            {
+                routes.MapHub<ChatHub>("/chatHub");
+            });
 
             app.UseEndpoints(endpoints =>
             {

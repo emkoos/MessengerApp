@@ -20,3 +20,44 @@
         <button type="submit">Wyślij</button>
     </form>
 </div> 
+
+@section scripts{ 
+    <script src="~/js/signalr.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
+
+        var _connectionId = '';
+
+        connection.on("ReceiveMessage", function (data) {
+            console.log(data);
+        })
+
+
+        var joinChat = function () {
+            axios.post('/Chat/JoinChat/' + _connectionId + '/@Model.Name', null)
+                .then(res => {
+                    console.log("Room Joined!", res);
+                })
+                .catch(error => {
+                    console.error("Failed Room Joined!", res);
+                })
+        }
+
+        connection.start()
+            .then(function () {
+                connection.invoke('getConnectionId')
+                    .then(function (connectionId) {
+                        _connectionId = connectionId
+                        joinChat();
+                    })
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
+
+    </script>
+}
