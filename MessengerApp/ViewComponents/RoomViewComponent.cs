@@ -1,8 +1,10 @@
 ﻿using MessengerApp.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MessengerApp.ViewComponents
@@ -18,7 +20,11 @@ namespace MessengerApp.ViewComponents
 
         public IViewComponentResult Invoke()
         {
-            var chats = _context.Chats.ToList();
+            var chats = _context.ChatUsers
+                .Include(x => x.Chat)
+                .Where(x => x.UserId == HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                .Select(c => c.Chat)
+                .ToList();
 
             return View(chats);
         }

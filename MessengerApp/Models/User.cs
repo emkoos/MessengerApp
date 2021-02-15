@@ -8,5 +8,6 @@ namespace MessengerApp.Models
 {
     public class User : IdentityUser
     {
+        public ICollection<ChatUser> Chats { get; set; }
     }
 }
