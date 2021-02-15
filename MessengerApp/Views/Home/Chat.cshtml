@@ -14,8 +14,9 @@
 </div>
 
 <div>
-    <form class="chat-input" asp-controller="Home" asp-action="CreateMessage">
+    <form class="chat-input" onsubmit="sendMessage(event)" asp-controller="Home" asp-action="CreateMessage">
         <input type="hidden" name="chatId" value="@Model.Id"/>
+        <input type="hidden" name="roomName" value="@Model.Name"/>
         <input type="text" name="content"/>
         <button type="submit">Wyślij</button>
     </form>
@@ -33,7 +34,25 @@
         var _connectionId = '';
 
         connection.on("ReceiveMessage", function (data) {
-            console.log(data);
+            var message = document.createElement("div")
+            message.classList.add('message')
+
+            var header = document.createElement("header")
+            header.appendChild(document.createTextNode(data.nick))
+
+            var p = document.createElement("p")
+            p.appendChild(document.createTextNode(data.content))
+
+            var footer = document.createElement("footer")
+            var date = new Date(data.timestamp).toLocaleTimeString()
+            footer.appendChild(document.createTextNode(date))
+
+            message.appendChild(header);
+            message.appendChild(p);
+            message.appendChild(footer);
+
+            var body = document.querySelector('.chat-body')
+            body.append(message);
         })
 
 
@@ -59,5 +78,18 @@
                 console.log(error)
             })
 
+
+        var sendMessage = function (event) {
+            event.preventDefault();
+
+            var data = new FormData(event.target);
+            axios.post('/Chat/SendMessage', data)
+                .then(res => {
+                    console.log("Message sent!")
+                })
+                .catch(error => {
+                    console.error("Failed with sending message!")
+                })
+        }
     </script>
 }

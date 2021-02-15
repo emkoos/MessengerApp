@@ -36,6 +36,7 @@ namespace MessengerApp.Controllers
             return Ok();
         }
 
+        [HttpPost("[action]")]
         public async Task<IActionResult> SendMessage(string content, string roomName, int chatId, [FromServices]MessengerDbContext context)
         {
             var message = new Message
