@@ -31,7 +31,13 @@ namespace MessengerApp
             services.AddDbContext<MessengerDbContext>(options =>
             options.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            })
                 .AddEntityFrameworkStores<MessengerDbContext>()
                 .AddDefaultTokenProviders();
         }
@@ -46,6 +52,9 @@ namespace MessengerApp
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

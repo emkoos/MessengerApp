@@ -1,5 +1,6 @@
 ﻿using MessengerApp.Data;
 using MessengerApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace MessengerApp.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly MessengerDbContext _context;
