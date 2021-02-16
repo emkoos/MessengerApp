@@ -22,7 +22,8 @@ namespace MessengerApp.ViewComponents
         {
             var chats = _context.ChatUsers
                 .Include(x => x.Chat)
-                .Where(x => x.UserId == HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                .Where(x => x.UserId == HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value 
+                                                            && x.Chat.Type == Models.ChatType.Room)
                 .Select(c => c.Chat)
                 .ToList();
 

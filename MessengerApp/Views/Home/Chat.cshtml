@@ -17,7 +17,7 @@
     <form class="chat-input" onsubmit="sendMessage(event)" asp-controller="Home" asp-action="CreateMessage">
         <input type="hidden" name="chatId" value="@Model.Id"/>
         <input type="hidden" name="roomName" value="@Model.Name"/>
-        <input type="text" name="content"/>
+        <input id="content-input" type="text" name="content"/>
         <button type="submit">Wyślij</button>
     </form>
 </div> 
@@ -83,6 +83,8 @@
             event.preventDefault();
 
             var data = new FormData(event.target);
+            document.getElementById('content-input').value = '';
+
             axios.post('/Chat/SendMessage', data)
                 .then(res => {
                     console.log("Message sent!")

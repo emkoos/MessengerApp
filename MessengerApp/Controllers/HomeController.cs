@@ -28,6 +28,15 @@ namespace MessengerApp.Controllers
             return View(chats);
         }
 
+        public IActionResult Find()
+        {
+            var users = _context.Users
+                .Where(x => x.Id != User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                .ToList();
+
+            return View(users);
+        }
+
         [HttpGet("{id}")]
         public IActionResult Chat(int id)
         {
@@ -90,6 +99,41 @@ namespace MessengerApp.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Chat", "Home", new { id = id});
+        }
+
+        public IActionResult Private()
+        {
+            var chats = _context.Chats
+                .Include(u => u.Users)
+                    .ThenInclude(x => x.User)
+                .Where(t => t.Type == ChatType.Private && t.Users
+                    .Any(y => y.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                .ToList();
+
+            return View(chats);
+        }
+
+        public async  Task<IActionResult> CreatePrivateRoom(string userId)
+        {
+            var chat = new Chat
+            {
+                Type = ChatType.Private
+            };
+
+            chat.Users.Add(new ChatUser {
+                UserId = userId
+            });
+
+            chat.Users.Add(new ChatUser
+            {
+                UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value
+            });
+
+            _context.Chats.Add(chat);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Chat", new { id = chat.Id});
         }
     }
 }
